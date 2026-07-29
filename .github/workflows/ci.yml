@@ -4,12 +4,15 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   rust:
     name: Zed extension
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-wasip2
@@ -23,9 +26,10 @@ jobs:
       run:
         working-directory: tools/xgols-zed
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
           go-version-file: tools/xgols-zed/go.mod
+          cache: false
       - run: test -z "$(gofmt -l .)"
       - run: go test ./...
