@@ -1,0 +1,5 @@
+/.DS_Store
+/target/
+/extension.wasm
+/grammars/
+/tools/xgols-zed/xgols-zed

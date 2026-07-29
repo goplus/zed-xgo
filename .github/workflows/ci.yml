@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    name: Zed extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip2
+      - run: cargo fmt --check
+      - run: cargo check --target wasm32-wasip2
+
+  go:
+    name: xgols-zed
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/xgols-zed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: tools/xgols-zed/go.mod
+      - run: test -z "$(gofmt -l .)"
+      - run: go test ./...

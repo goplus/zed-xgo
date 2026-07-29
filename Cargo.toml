@@ -1,0 +1,14 @@
+[package]
+name = "zed_xgo"
+version = "0.1.1"
+edition = "2021"
+publish = false
+description = "XGo language support for Zed"
+license = "Apache-2.0"
+repository = "https://github.com/goplus/zed-xgo"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+zed_extension_api = "0.7.0"
