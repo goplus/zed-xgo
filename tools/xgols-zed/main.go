@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 )
@@ -34,6 +35,10 @@ type workspaceFolder struct {
 
 var errSourceFound = errors.New("XGo source found")
 
+// Cap auto-discovered workspace folders so opening a huge monorepo
+// (e.g. a company root with many nested modules) does not freeze xgols.
+const maxDiscoveredModules = 12
+
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	body, err := readMessage(reader)
@@ -42,9 +47,9 @@ func main() {
 	}
 	body = rewriteInitialize(body)
 
-	xgolsPath, err := exec.LookPath("xgols")
+	xgolsPath, err := resolveXgols()
 	if err != nil {
-		fatalf("find xgols in PATH: %v", err)
+		fatalf("resolve xgols: %v", err)
 	}
 	command := exec.Command(xgolsPath, os.Args[1:]...)
 	command.Stderr = os.Stderr
@@ -90,6 +95,10 @@ func rewriteInitialize(body []byte) []byte {
 	modules := discoverXGoModules(root)
 	if len(modules) == 0 || (len(modules) == 1 && modules[0] == root) {
 		return body
+	}
+	if len(modules) > maxDiscoveredModules {
+		fmt.Fprintf(os.Stderr, "xgols-zed: found %d XGo modules under %s; using the first %d to keep startup fast\n", len(modules), root, maxDiscoveredModules)
+		modules = modules[:maxDiscoveredModules]
 	}
 
 	folders := make([]workspaceFolder, 0, len(modules))
@@ -217,18 +226,30 @@ func writeMessage(writer io.Writer, body []byte) error {
 
 func fileURIPath(raw string) string {
 	uri, err := url.Parse(raw)
-	if err != nil || uri.Scheme != "file" || uri.Path == "" {
+	if err != nil || uri.Scheme != "file" {
 		return ""
 	}
 	path, err := url.PathUnescape(uri.Path)
-	if err != nil {
+	if err != nil || path == "" {
 		return ""
+	}
+	if runtime.GOOS == "windows" {
+		if uri.Host != "" {
+			path = "//" + uri.Host + path
+		} else if strings.HasPrefix(path, "/") {
+			path = strings.TrimPrefix(path, "/")
+		}
+		path = filepath.FromSlash(path)
 	}
 	return filepath.Clean(path)
 }
 
 func filePathURI(path string) string {
-	return (&url.URL{Scheme: "file", Path: filepath.ToSlash(path)}).String()
+	path = filepath.ToSlash(path)
+	if runtime.GOOS == "windows" {
+		return (&url.URL{Scheme: "file", Path: "/" + path}).String()
+	}
+	return (&url.URL{Scheme: "file", Path: path}).String()
 }
 
 func fatalf(format string, args ...any) {
