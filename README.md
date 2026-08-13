@@ -27,8 +27,9 @@ pinned `xgols` version changes, `xgols` is compiled again. You do not delete
 - [Go](https://go.dev/dl/)
 - [XGo](https://xgo.dev) — `xgo install` understands `xgols`'s `replace` directives
 
-`xgols` itself is installed automatically. This extension version pins
-`github.com/goplus/xgols@v0.14.1` (override with settings if you need another tag).
+`xgols` itself is installed automatically. This extension version installs
+`github.com/goplus/xgols@latest` (the newest module version at compile time).
+Pin a tag with `xgols_version` if you need a fixed release.
 
 ## How it works
 
@@ -36,7 +37,7 @@ Zed's WASM extension cannot compile anything. On LSP start it launches
 `xgols-zed`, which:
 
 1. Compiles itself with `go build` when missing or when adapter sources changed
-2. Runs `xgo install github.com/goplus/xgols@v0.14.1` into the extension `bin`
+2. Runs `xgo install github.com/goplus/xgols@latest` into the extension `bin`
    directory (falls back to `gop install`, then `go mod download` + `go build -C`)
 3. Starts that locally built `xgols`
 
@@ -49,7 +50,7 @@ Zed's WASM extension cannot compile anything. On LSP start it launches
       "settings": {
         "prefer_system_binary": false,
         "xgols_module": "github.com/goplus/xgols",
-        "xgols_version": "v0.14.1"
+        "xgols_version": "latest"
       },
       "binary": {
         "path": "/absolute/path/to/xgols-zed"
@@ -61,7 +62,7 @@ Zed's WASM extension cannot compile anything. On LSP start it launches
 
 - `prefer_system_binary`: default `false` so the extension compiles `xgols` with
   your toolchain. Set `true` only to reuse a PATH-installed `xgols`.
-- `xgols_version`: module version / tag (`v0.14.1`, `latest`, …)
+- `xgols_version`: module version / tag (`latest`, `v0.14.1`, …)
 - `xgols_module`: override the module path (may already include `@version`)
 - `binary.path`: bypass bootstrap and run this executable directly
 

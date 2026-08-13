@@ -1,7 +1,7 @@
 id = "xgo"
 name = "XGo"
 description = "XGo language support for Zed, powered by xgols."
-version = "0.1.7"
+version = "0.1.8"
 schema_version = 1
 authors = ["XGo Team"]
 repository = "https://github.com/goplus/zed-xgo"

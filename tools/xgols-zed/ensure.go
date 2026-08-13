@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	defaultXgolsModule = "github.com/goplus/xgols@v0.14.1"
+	defaultXgolsModule = "github.com/goplus/xgols@latest"
 	installedStampName = "xgols.installed"
 	xgoInstallHint     = "Install XGo from https://xgo.dev/ so `xgo` is on PATH, then restart Zed."
 	goInstallHint      = "Install Go from https://go.dev/dl/ so `go` is on PATH, then restart Zed."

@@ -6,7 +6,7 @@ use zed_extension_api::{
 };
 
 const DEFAULT_XGOLS_MODULE: &str = "github.com/goplus/xgols";
-const DEFAULT_XGOLS_VERSION: &str = "v0.14.1";
+const DEFAULT_XGOLS_VERSION: &str = "latest";
 const ADAPTER_DIR: &str = "xgols-zed-src";
 const MANAGED_BIN_DIR: &str = "bin";
 const ADAPTER_REV_FILE: &str = "xgols-zed.rev";
