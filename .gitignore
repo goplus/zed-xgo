@@ -2,4 +2,7 @@
 /target/
 /extension.wasm
 /grammars/
+/bin/
+/xgols-zed-src/
 /tools/xgols-zed/xgols-zed
+/tools/xgols-zed/xgols-zed.exe
